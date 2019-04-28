@@ -1,12 +1,12 @@
 FROM alpine:3.8 as protoc_builder
 RUN apk add --no-cache build-base curl automake autoconf libtool git zlib-dev
 
-ENV GRPC_VERSION=1.16.0 \
-        GRPC_JAVA_VERSION=1.16.1 \
-        GRPC_WEB_VERSION=1.0.0 \
+ENV GRPC_VERSION=1.20.1 \
+        GRPC_JAVA_VERSION=1.20.0 \
+        GRPC_WEB_VERSION=1.0.3 \
         PROTOBUF_VERSION=3.6.1 \
         PROTOBUF_C_VERSION=1.3.1 \
-        PROTOC_GEN_DOC_VERSION=1.1.0 \
+        PROTOC_GEN_DOC_VERSION=1.3.0 \
         OUTDIR=/out
 RUN mkdir -p /protobuf && \
         curl -L https://github.com/google/protobuf/archive/v${PROTOBUF_VERSION}.tar.gz | tar xvz --strip-components=1 -C /protobuf
@@ -66,10 +66,10 @@ RUN go get -u -v -ldflags '-w -s' \
         github.com/johanbrandhorst/protobuf/protoc-gen-gopherjs \
         github.com/ckaznocha/protoc-gen-lint \
         github.com/mwitkow/go-proto-validators/protoc-gen-govalidators \
-        github.com/lyft/protoc-gen-validate \
+        github.com/envoyproxy/protoc-gen-validate \
         moul.io/protoc-gen-gotemplate \
-        github.com/micro/protoc-gen-micro \
-        && (cd ${GOPATH}/src/github.com/lyft/protoc-gen-validate && make build) \
+        github.com/micro/protoc-gen-micro
+ RUN (cd ${GOPATH}/src/github.com/envoyproxy/protoc-gen-validate && make build) \
         && install -c ${GOPATH}/bin/protoc-gen* ${OUTDIR}/usr/bin/
 
 RUN mkdir -p ${GOPATH}/src/github.com/pseudomuto/protoc-gen-doc && \
